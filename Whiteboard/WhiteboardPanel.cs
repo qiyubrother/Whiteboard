@@ -13,8 +13,8 @@ namespace Whiteboard
     public partial class WhiteboardPanel : UserControl
     {
         private bool isKeyDown = false; // 按下屏幕
-        private float x = 0;
-        private float y = 0;
+        private int x = 0;
+        private int y = 0;
         private Queue<DrawTask> workQueue = new Queue<DrawTask>();
         public WhiteboardPanel()
         {
@@ -64,7 +64,6 @@ namespace Whiteboard
             isKeyDown = true;
             x = e.X;
             y = e.Y;
-            FindForm().Text = $"D,x={x},y={y}";
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -73,7 +72,6 @@ namespace Whiteboard
             x = 0;
             y = 0;
             base.OnMouseUp(e);
-            FindForm().Text = $"U,x={x},y={y}";
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -81,12 +79,11 @@ namespace Whiteboard
             base.OnMouseMove(e);
             if (isKeyDown)
             {
-                FindForm().Text = $"M,x={x},y={y}";
                 var g = this.CreateGraphics();
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 var pen = new Pen(new SolidBrush(PenColor), PenWidth);
                 g.DrawPolygon(pen, new[] { new Point((int)x, (int)y), new Point((int)e.X, (int)e.Y) });
-                g.FillEllipse(new SolidBrush(PenColor), e.X - PenWidth/2, e.Y - PenWidth/2, PenWidth, PenWidth);
+                g.FillEllipse(new SolidBrush(PenColor), e.X - PenWidth*1.0f/2, e.Y - PenWidth*1.0f/2, PenWidth, PenWidth);
 
                 workQueue.Enqueue(new DrawTask
                 {
